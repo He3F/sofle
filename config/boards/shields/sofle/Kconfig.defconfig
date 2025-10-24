@@ -13,6 +13,7 @@ if SHIELD_SOFLE_LEFT || SHIELD_SOFLE_RIGHT
 
 config ZMK_SPLIT
     default y
-    ZMK_USB y
+config ZMK_USB
+    default y
 
 endif
