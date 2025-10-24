@@ -17,4 +17,4 @@
 
 &right_encoder {
     status = "okay";
-}; GPIO_PULL_UP)>,
+};
