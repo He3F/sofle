@@ -2,6 +2,6 @@ if SHIELD_SOFLE
 
 config ZMK_KEYBOARD_NAME
     default "mySofle"
-    ZMK_USB true
+    ZMK_USB y
 
 endif
