@@ -1,5 +1,5 @@
 
-if SHIELD_SOFLE_RIGHT
+if SHIELD_SOFLE_LEFT
 
 config ZMK_KEYBOARD_NAME
     default "SOFLE"
