@@ -12,7 +12,7 @@ config ZMK_SPLIT_ROLE_CENTRAL
 if SHIELD_SOFLE_LEFT || SHIELD_SOFLE_RIGHT
 
 config ZMK_SPLIT
-    default n
+    default y
 config ZMK_USB
     default y
 
