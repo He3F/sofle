@@ -42,6 +42,14 @@ RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5) RC(4,6)             RC(4,7) RC(4
               <&gpio0 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>,
               <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 
+        col-gpios
+            = <&gpio0 31 GPIO_ACTIVE_HIGH>,
+            <&gpio0 2 GPIO_ACTIVE_HIGH>,
+            <&gpio1 13 GPIO_ACTIVE_HIGH>,
+            <&gpio0 10 GPIO_ACTIVE_HIGH>,
+            <&gpio0 17 GPIO_ACTIVE_HIGH>,
+            <&gpio0 22 GPIO_ACTIVE_HIGH>,
+            <&gpio1 0 GPIO_ACTIVE_HIGH>;
     };
     /*  left_encoder: encoder_left { */
     /*     compatible = "alps,ec11"; */
