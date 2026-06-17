@@ -31,8 +31,8 @@
         label = "KSCAN";
 
         diode-direction = "col2row";
-        row-gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
-        col-gpios = <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        row-gpios = <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        col-gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
     };
 
     /* kscan0: kscan { */
