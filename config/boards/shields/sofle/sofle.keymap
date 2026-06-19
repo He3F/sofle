@@ -1,0 +1,133 @@
+/*
+ * Copyright (c) 2024 He3F
+ * SPDX-License-Identifier: MIT
+ *
+ * Sofle keymap – 3 layers, 64 bindings each.
+ *
+ * Physical layout (left | right) with transform column indices:
+ *
+ *  Row 0 (12):  K  K  K  K  K  K  [skip 6,7]  K  K  K  K  K  K
+ *  Row 1 (12):  K  K  K  K  K  K  [skip 6,7]  K  K  K  K  K  K
+ *  Row 2 (12):  K  K  K  K  K  K  [skip 6,7]  K  K  K  K  K  K
+ *  Row 3 (14):  K  K  K  K  K  K  R            R  K  K  K  K  K  K
+ *  Row 4 (14):  #  #  K  K  K  K  K            K  K  K  K  K  #  #
+ *
+ *  #  = empty matrix position (not wired)     → &none
+ *  R  = rotary encoder push-button            → &none until CONFIG_EC11 enabled
+ *  K  = regular key switch
+ *
+ * Binding order mirrors the transform map exactly (left→right, top→bottom).
+ * Right-half bindings are &trans placeholders while running left-only
+ * (CONFIG_ZMK_SPLIT=n); they activate once split mode is enabled.
+ *
+ * ┌──────┬──────┬──────┬──────┬──────┬──────┐                   ┌──────┬──────┬──────┬──────┬──────┬──────┐
+ * │  `   │  1   │  2   │  3   │  4   │  5   │                   │  6   │  7   │  8   │  9   │  0   │ BSPC │
+ * ├──────┼──────┼──────┼──────┼──────┼──────┤                   ├──────┼──────┼──────┼──────┼──────┼──────┤
+ * │ TAB  │  Q   │  W   │  E   │  R   │  T   │                   │  Y   │  U   │  I   │  O   │  P   │  \   │
+ * ├──────┼──────┼──────┼──────┼──────┼──────┤                   ├──────┼──────┼──────┼──────┼──────┼──────┤
+ * │ ESC  │  A   │  S   │  D   │  F   │  G   │                   │  H   │  J   │  K   │  L   │  ;   │  '   │
+ * ├──────┼──────┼──────┼──────┼──────┼──────┼──────┐   ┌──────┼──────┼──────┼──────┼──────┼──────┼──────┤
+ * │LSHFT │  Z   │  X   │  C   │  V   │  B   │[enc] │   │[enc] │  N   │  M   │  ,   │  .   │  /   │RSHFT │
+ * ├──────┼──────┼──────┼──────┼──────┼──────┼──────┤   ├──────┼──────┼──────┼──────┼──────┼──────┼──────┤
+ * │  [#] │  [#] │LCTRL │ LALT │ LGUI │MO(1) │ SPC  │   │ ENT  │MO(2) │ RGUI │ RALT │RCTRL │  [#] │  [#] │
+ * └──────┴──────┴──────┴──────┴──────┴──────┴──────┘   └──────┴──────┴──────┴──────┴──────┴──────┴──────┘
+ *  [#] = empty (not wired)   [enc] = encoder button (disabled for now)
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        /* ───────────────────────── Layer 0 – QWERTY default ───────────────────────── */
+        default_layer {
+            bindings = <
+            /* row 0 – number row                                   12 keys             */
+            &kp GRAVE  &kp N1     &kp N2     &kp N3     &kp N4     &kp N5
+                                                                               &kp N6     &kp N7     &kp N8     &kp N9     &kp N0     &kp BSPC
+            /* row 1 – QWERTY                                       12 keys             */
+            &kp TAB    &kp Q      &kp W      &kp E      &kp R      &kp T
+                                                                               &kp Y      &kp U      &kp I      &kp O      &kp P      &kp BSLH
+            /* row 2 – home row                                     12 keys             */
+            &kp ESC    &kp A      &kp S      &kp D      &kp F      &kp G
+                                                                               &kp H      &kp J      &kp K      &kp L      &kp SEMI   &kp SQT
+            /* row 3 – bottom row; col 6 = enc btn L, col 7 = enc btn R   14 keys      */
+            &kp LSHFT  &kp Z      &kp X      &kp C      &kp V      &kp B      &none
+                                                                    &none      &kp N      &kp M      &kp COMMA  &kp DOT    &kp FSLH   &kp RSHFT
+            /* row 4 – thumb cluster; cols 0-1 empty L, cols 12-13 empty R 14 keys     */
+            &none      &none      &kp LCTRL  &kp LALT   &kp LGUI   &mo 1      &kp SPACE
+                                                                    &kp RET    &mo 2      &kp RGUI   &kp RALT   &kp RCTRL  &none      &none
+            >;
+        };
+
+        /* ─────────────────────── Layer 1 – Lower (numbers / nav) ──────────────────── */
+        lower_layer {
+            /*
+             * ┌────┬────┬────┬────┬────┬────┐             ┌────┬────┬────┬────┬────┬────┐
+             * │ F1 │ F2 │ F3 │ F4 │ F5 │ F6 │             │ F7 │ F8 │ F9 │F10 │F11 │F12 │
+             * ├────┼────┼────┼────┼────┼────┤             ├────┼────┼────┼────┼────┼────┤
+             * │    │  1 │  2 │  3 │  4 │  5 │             │  6 │  7 │  8 │  9 │  0 │ DEL│
+             * ├────┼────┼────┼────┼────┼────┤             ├────┼────┼────┼────┼────┼────┤
+             * │    │    │    │    │    │    │             │ ◄  │ ▼  │ ▲  │ ►  │    │    │
+             * ├────┼────┼────┼────┼────┼────┼────┐ ┌────┼────┼────┼────┼────┼────┼────┤
+             * │    │    │    │    │    │    │    │ │    │    │  - │  = │  [ │  ] │  \ │    │
+             * ├────┼────┼────┼────┼────┼────┼────┤ ├────┼────┼────┼────┼────┼────┼────┤
+             * │ [#]│ [#]│    │    │    │[MO1│    │ │    │[MO2│    │    │    │ [#]│ [#]│
+             * └────┴────┴────┴────┴────┴────┴────┘ └────┴────┴────┴────┴────┴────┴────┘
+             */
+            bindings = <
+            /* row 0 – function keys                                12 keys             */
+            &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6
+                                                                               &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12
+            /* row 1 – number row + DEL                            12 keys             */
+            &trans     &kp N1     &kp N2     &kp N3     &kp N4     &kp N5
+                                                                               &kp N6     &kp N7     &kp N8     &kp N9     &kp N0     &kp DEL
+            /* row 2 – arrow cluster on right                      12 keys             */
+            &trans     &trans     &trans     &trans     &trans     &trans
+                                                                               &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &trans     &trans
+            /* row 3                                               14 keys             */
+            &trans     &trans     &trans     &trans     &trans     &trans     &none
+                                                                    &none      &trans     &kp MINUS  &kp EQUAL  &kp LBKT   &kp RBKT   &kp BSLH
+            /* row 4 – outer empties stay dead, held layer key transparent  14 keys   */
+            &none      &none      &trans     &trans     &trans     &trans     &trans
+                                                                    &trans     &trans     &trans     &trans     &trans     &none      &none
+            >;
+        };
+
+        /* ─────────────────────── Layer 2 – Raise (symbols) ────────────────────────── */
+        raise_layer {
+            /*
+             * ┌────┬────┬────┬────┬────┬────┐             ┌────┬────┬────┬────┬────┬────┐
+             * │    │    │    │    │    │    │             │    │    │    │    │    │    │
+             * ├────┼────┼────┼────┼────┼────┤             ├────┼────┼────┼────┼────┼────┤
+             * │    │  ! │  @ │  # │  $ │  % │             │  ^ │  & │  * │  ( │  ) │ DEL│
+             * ├────┼────┼────┼────┼────┼────┤             ├────┼────┼────┼────┼────┼────┤
+             * │CAPS│    │    │    │    │    │             │    │  _ │  + │  { │  } │  | │
+             * ├────┼────┼────┼────┼────┼────┼────┐ ┌────┼────┼────┼────┼────┼────┼────┤
+             * │    │    │    │    │    │    │    │ │    │    │  - │  = │  [ │  ] │  \ │    │
+             * ├────┼────┼────┼────┼────┼────┼────┤ ├────┼────┼────┼────┼────┼────┼────┤
+             * │ [#]│ [#]│    │    │    │    │    │ │    │[MO2│    │    │    │ [#]│ [#]│
+             * └────┴────┴────┴────┴────┴────┴────┘ └────┴────┴────┴────┴────┴────┴────┘
+             */
+            bindings = <
+            /* row 0                                                12 keys             */
+            &trans     &trans     &trans     &trans     &trans     &trans
+                                                                               &trans     &trans     &trans     &trans     &trans     &trans
+            /* row 1 – shifted number-row symbols                  12 keys             */
+            &trans     &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT
+                                                                               &kp CARET  &kp AMPS   &kp STAR   &kp LPAR   &kp RPAR   &kp DEL
+            /* row 2 – shifted punctuation on right home row       12 keys             */
+            &kp CAPS   &trans     &trans     &trans     &trans     &trans
+                                                                               &trans     &kp UNDER  &kp PLUS   &kp LBRC   &kp RBRC   &kp PIPE
+            /* row 3 – unshifted bracket/punct for one-hand reach  14 keys             */
+            &trans     &trans     &trans     &trans     &trans     &trans     &none
+                                                                    &none      &trans     &kp MINUS  &kp EQUAL  &kp LBKT   &kp RBKT   &kp BSLH
+            /* row 4                                               14 keys             */
+            &none      &none      &trans     &trans     &trans     &trans     &trans
+                                                                    &trans     &trans     &trans     &trans     &trans     &none      &none
+            >;
+        };
+    };
+};
